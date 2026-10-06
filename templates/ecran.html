@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demandes d'actes</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#d4d4d4;--soft:#f2f2f2;--bg:#e9e9e9;--w:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+button,input,select,textarea{font:inherit;color:inherit}
+.nav{height:46px;display:flex;align-items:center;gap:16px;padding:0 16px;background:var(--w);border-bottom:1px solid var(--line)}
+.nav b{font-size:14px}.nav .sp{flex:1}.nav .mut{margin-right:8px}
+.lnk{background:none;border:0;cursor:pointer;padding:4px 0}.lnk:hover{text-decoration:underline}
+.mut{color:var(--mut)}
+.cp{background:var(--w);border-bottom:1px solid var(--line);padding:8px 16px;display:grid;gap:8px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row .sp{flex:1}
+.bc{font-size:15px;display:flex;gap:8px;align-items:center;margin-right:8px}
+.bc a{color:var(--mut);cursor:pointer}.bc a:hover{color:var(--ink);text-decoration:underline}
+.btn{height:32px;padding:0 12px;border:1px solid var(--line);background:var(--w);border-radius:3px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--soft)}
+.btn.p{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.p:hover{background:#000}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.pg{display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}.pg .btn{width:28px;padding:0}
+.sb{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:3px;min-height:32px;padding:0 4px;flex:1;max-width:560px;background:var(--w)}
+.sb:focus-within{border-color:var(--ink)}
+.sb input{border:0;outline:0;flex:1;min-width:120px;height:28px;background:transparent}
+.fc{display:flex;align-items:center;gap:4px;height:22px;padding:0 4px 0 8px;background:var(--soft);border:1px solid var(--line);border-radius:2px;white-space:nowrap}
+.fc button{border:0;background:none;cursor:pointer;padding:0 4px}
+.dd{position:relative}.dd summary{list-style:none}.dd summary::-webkit-details-marker{display:none}
+.menu{position:absolute;top:36px;left:0;z-index:5;min-width:200px;background:var(--w);border:1px solid var(--ink);border-radius:3px;padding:4px 0}
+.menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 16px;cursor:pointer}.menu button:hover{background:var(--soft)}
+.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}.menu small{display:block;padding:4px 16px;color:var(--mut)}
+.tbl{width:calc(100% - 32px);margin:16px;border-collapse:collapse;background:var(--w);border:1px solid var(--line)}
+.tbl th{text-align:left;font-weight:600;font-size:12px;padding:0 8px;height:32px;border-bottom:1px solid var(--ink)}
+.tbl td{height:32px;padding:0 8px;border-bottom:1px solid var(--line)}
+.tbl .n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.r{cursor:pointer}.tbl tr.r:hover,.tbl tr.r:focus-visible{background:var(--soft)}
+.tbl .empty{height:96px;text-align:center;color:var(--mut)}
+.st{display:inline-block;line-height:20px;padding:0 8px;border:1px solid var(--ink);border-radius:10px;font-size:12px;white-space:nowrap}
+.st.DEPOSEE{border-style:dashed;border-color:var(--mut);color:var(--mut)}
+.st.VALIDEE{background:var(--ink);color:#fff}.st.REJETEE{text-decoration:line-through}
+.sbar{display:flex}.sbar span{height:32px;line-height:30px;padding:0 16px;border:1px solid var(--line);margin-left:-1px;font-size:12px;color:var(--mut);background:var(--w)}
+.sbar span.on{background:var(--ink);color:#fff;border-color:var(--ink);position:relative}
+.sheet{background:var(--w);max-width:960px;margin:16px auto;border:1px solid var(--line);padding:24px 32px}
+.sheet h1{margin:0 0 24px;font-size:24px;font-weight:600}.sheet h1 small{display:block;font-size:12px;font-weight:400;color:var(--mut)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.fld{display:grid;grid-template-columns:130px 1fr;align-items:center;min-height:36px}
+.fld label{font-weight:600}.fld .v{padding:0 4px;min-height:28px;display:flex;align-items:center}
+.fld input,.fld select,textarea{width:100%;height:28px;padding:0 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}
+.fld input:read-only{border-bottom-color:transparent}.fld input:focus,.fld select:focus,textarea:focus{outline:0;border-bottom-color:var(--ink)}
+textarea{height:auto;padding:4px;border:1px solid var(--line);border-radius:3px}
+.alert{border:1px solid var(--ink);border-left-width:4px;padding:8px 16px;margin-bottom:16px;background:var(--soft)}
+.chat{max-width:960px;margin:0 auto 32px;padding:0 32px}.chat h2{font-size:13px;margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid var(--ink)}
+.msg{display:grid;grid-template-columns:130px 1fr;padding:8px 0;border-bottom:1px solid var(--line)}
+dialog{border:1px solid var(--ink);border-radius:3px;padding:0;width:min(480px,calc(100vw - 32px));background:var(--w);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+dialog header{padding:16px 24px;border-bottom:1px solid var(--line);font-size:15px;font-weight:600}
+dialog .bd{padding:16px 24px}dialog footer{padding:8px 24px 16px;display:flex;gap:8px}
+.hlp{width:100%;border-collapse:collapse}.hlp td,.hlp th{text-align:left;padding:6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+kbd{border:1px solid var(--line);border-radius:3px;padding:0 4px;font-size:12px;background:var(--soft)}
+#login{max-width:360px;margin:64px auto}#login h1{font-size:18px;margin:0 0 16px}
+#login .fld{grid-template-columns:1fr}#login input{border:1px solid var(--line);border-radius:3px;padding:0 8px;height:32px}
+#toasts{position:fixed;top:54px;right:16px;display:grid;gap:8px;z-index:20}
+.toast{background:var(--ink);color:#fff;padding:8px 16px;border-radius:3px;max-width:360px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.sheet,.chat{padding-left:16px;padding-right:16px}.tbl{display:block;overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="nav"><b>Demandes d'actes</b><span class="sp"></span><span id="who" class="mut" hidden></span>
+  <button class="lnk" id="help">Aide <kbd>?</kbd></button><button class="lnk" id="out" hidden>Déconnexion</button></div>
+
+<form id="login" class="sheet">
+  <h1>Connexion</h1>
+  <div class="fld"><label for="u">Identifiant (NPI ou nom d'agent)</label><input id="u" autocomplete="username" required></div>
+  <div class="fld"><label for="p">Mot de passe</label><input id="p" type="password" autocomplete="current-password" required></div>
+  <div class="alert" id="lerr" role="alert" hidden></div>
+  <div class="row"><button class="btn p" id="lgo">Se connecter</button></div>
+</form>
+
+<div id="v"></div>
+
+<dialog id="dRej"><header>Rejeter la demande</header>
+  <div class="bd"><label for="motif"><b>Motif du rejet</b> <span class="mut">(obligatoire, 500 caractères max)</span></label><textarea id="motif" rows="4" maxlength="500"></textarea>
+  <div class="alert" id="rerr" role="alert" hidden style="margin:8px 0 0"></div></div>
+  <footer><button class="btn p" id="rok">Rejeter</button><button class="btn" data-close>Annuler</button></footer></dialog>
+
+<dialog id="dHelp"><header>Où faire quoi ?</header><div class="bd">
+  <table class="hlp">
+  <tr><th>Je veux…</th><th>Où</th></tr>
+  <tr><td>Voir les demandes</td><td>Liste <code>#/</code> (la plus récente en haut)</td></tr>
+  <tr><td>Nouvelle demande</td><td>Bouton « Nouveau » <kbd>Alt</kbd>+<kbd>N</kbd> → formulaire <code>#/new</code></td></tr>
+  <tr><td>Filtrer / chercher</td><td>Barre de recherche : « Filtres » (statut), NPI + Entrée (agent)</td></tr>
+  <tr><td>Détail et historique</td><td>Clic sur une ligne → fiche <code>#/d/…</code></td></tr>
+  <tr><td>Traiter (agent)</td><td>Fiche → Prendre en charge, puis Valider ou Rejeter</td></tr>
+  <tr><td>Revenir à la liste</td><td>Fil d'Ariane ou <kbd>Échap</kbd></td></tr></table></div>
+  <footer><button class="btn p" data-close>Fermer</button></footer></dialog>
+<div id="toasts" role="status"></div>
+
+<script>
+// Jeton en mémoire (jamais localStorage) ; tout contenu dynamique passe par textContent (anti-XSS).
+const $=s=>document.querySelector(s),V=$("#v");
+const T={ACTE_NAISSANCE:"Acte de naissance",CASIER_JUDICIAIRE:"Casier judiciaire",CERTIFICAT_RESIDENCE:"Certificat de résidence"};
+const S={DEPOSEE:"Déposée",EN_COURS:"En cours",VALIDEE:"Validée",REJETEE:"Rejetée"};
+const IC={DEPOSEE:"○",EN_COURS:"◐",VALIDEE:"●",REJETEE:"✕"};
+let A={},F={npi:"",statut:""},pg=1;
+const isAgent=()=>A.role==="AGENT";
+const fmt=d=>new Date(d).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"});
+function h(t,p,...k){const e=document.createElement(t);if(p)Object.assign(e,p);for(const c of k.flat())if(c!=null)e.append(c);return e}
+const pill=s=>h("span",{className:"st "+s,textContent:IC[s]+" "+S[s]});
+function toast(m){const t=h("div",{className:"toast",textContent:m});$("#toasts").append(t);setTimeout(()=>t.remove(),4000)}
+const go=x=>{location.hash=x};
+
+async function api(p,o={},retry=true){
+  const hd=Object.assign({"Content-Type":"application/json"},o.headers||{});
+  if(A.access)hd.Authorization="Bearer "+A.access;
+  const r=await fetch(p,Object.assign({},o,{headers:hd}));
+  if(r.status===401&&retry&&A.refresh&&!p.includes("/auth/")){
+    const rr=await fetch("/api/auth/token/refresh/",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({refresh:A.refresh})});
+    if(rr.ok){const d=await rr.json();A.access=d.access;A.refresh=d.refresh||A.refresh;return api(p,o,false)}
+    logout();throw new Error("Session expirée, reconnectez-vous.");
+  }
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){
+    const e=d.error||{};let m=e.message||"Erreur "+r.status;
+    if(e.details&&typeof e.details==="object")m=Object.entries(e.details).map(([k,v])=>k+" : "+[].concat(v).join(" ")).join(" · ");
+    throw new Error(m);
+  }
+  return d;
+}
+
+// ---------- Connexion ----------
+$("#login").onsubmit=async ev=>{
+  ev.preventDefault();$("#lerr").hidden=true;$("#lgo").disabled=true;
+  try{
+    A=await api("/api/auth/token/",{method:"POST",body:JSON.stringify({username:$("#u").value.trim(),password:$("#p").value})});
+    $("#p").value="";$("#who").textContent=isAgent()?"Agent":"NPI "+A.npi;$("#who").hidden=false;$("#out").hidden=false;route();
+  }catch(e){$("#lerr").textContent=e.message.startsWith("Aucun compte")?"Identifiant ou mot de passe incorrect.":e.message;$("#lerr").hidden=false}
+  $("#lgo").disabled=false;
+};
+function logout(){A={};F={npi:"",statut:""};pg=1;$("#who").hidden=true;$("#out").hidden=true;go("");route()}
+$("#out").onclick=()=>{if(A.refresh)api("/api/auth/logout/",{method:"POST",body:JSON.stringify({refresh:A.refresh})}).catch(()=>{});logout()};
+
+// ---------- Panneau de contrôle (fil d'Ariane + actions) ----------
+function cp(crumbs,left,right,extra){
+  const bc=h("div",{className:"bc"});
+  crumbs.forEach(([l,to],i)=>{if(i)bc.append("/");bc.append(to?h("a",{textContent:l,onclick:()=>go(to),tabIndex:0,onkeydown:e=>{if(e.key==="Enter")go(to)}}):h("span",{textContent:l}))});
+  return h("div",{className:"cp"},h("div",{className:"row"},bc,left,h("span",{className:"sp"}),right),extra);
+}
+
+// ---------- Vue Liste ----------
+async function vList(){
+  const q=new URLSearchParams({page:pg});if(F.npi)q.set("npi",F.npi);if(F.statut)q.set("statut",F.statut);
+  let d,s;
+  try{[d,s]=await Promise.all([api("/api/demandes/?"+q),api("/api/demandes/stats/"+(F.npi?"?npi="+F.npi:""))])}catch(e){return toast(e.message)}
+  const a=d.count?(pg-1)*20+1:0,b=d.count?a+d.results.length-1:0;
+  const pager=h("div",{className:"pg"},h("span",{textContent:a+"-"+b+" / "+d.count}),
+    h("button",{className:"btn",textContent:"‹",title:"Page précédente",disabled:!d.previous,onclick:()=>{pg--;vList()}}),
+    h("button",{className:"btn",textContent:"›",title:"Page suivante",disabled:!d.next,onclick:()=>{pg++;vList()}}));
+  const facet=(l,clear)=>h("span",{className:"fc"},l,h("button",{textContent:"×",title:"Retirer",onclick:clear}));
+  const inp=h("input",{placeholder:isAgent()?"Rechercher un NPI (10 chiffres) puis Entrée…":"Rechercher…",inputMode:"numeric",maxLength:10,hidden:!isAgent(),
+    onkeydown:e=>{if(e.key!=="Enter")return;const v=e.target.value.trim();
+      if(!/^[0-9]{10}$/.test(v))return toast("Le NPI doit comporter exactement 10 chiffres.");F.npi=v;pg=1;vList()}});
+  const menu=h("div",{className:"menu"},h("small",{textContent:"Statut"}),
+    Object.keys(S).map(k=>h("button",{textContent:(F.statut===k?"✓ ":"   ")+S[k]+" ("+s.par_statut[k]+")",onclick:()=>{F.statut=F.statut===k?"":k;pg=1;vList()}})));
+  const dd=h("details",{className:"dd"},h("summary",{className:"btn",textContent:"Filtres ▾"}),menu);
+  const search=h("div",{className:"row"},h("div",{className:"sb"},
+    F.npi?facet("NPI : "+F.npi,()=>{F.npi="";pg=1;vList()}):null,
+    F.statut?facet("Statut : "+S[F.statut],()=>{F.statut="";pg=1;vList()}):null,inp),dd);
+  const rows=d.results.length?d.results.map(x=>{
+    const tr=h("tr",{className:"r",tabIndex:0,onclick:()=>go("#/d/"+x.id),onkeydown:e=>{if(e.key==="Enter")go("#/d/"+x.id)}},
+      h("td",{textContent:x.id.slice(0,8)}),h("td",{textContent:x.npi}),h("td",{textContent:T[x.type_acte]}),
+      h("td",{className:"n",textContent:x.nombre_copies}),h("td",{textContent:fmt(x.created_at)}),h("td",{},pill(x.statut)));
+    return tr}):[h("tr",{},h("td",{className:"empty",colSpan:6,textContent:"Aucune demande. Cliquez sur « Nouveau » pour en créer une."}))];
+  V.replaceChildren(
+    cp([["Demandes"]],h("button",{className:"btn p",textContent:"Nouveau",title:"Alt+N",onclick:()=>go("#/new")}),pager,search),
+    h("table",{className:"tbl"},h("thead",{},h("tr",{},["Référence","NPI","Type d'acte","Copies","Créée le","Statut"].map((c,i)=>h("th",{className:i===3?"n":"",textContent:c})))),h("tbody",{},rows)));
+}
+
+// ---------- Barre de statut ----------
+const sbar=cur=>h("div",{className:"sbar"},Object.keys(S).map(k=>h("span",{className:k===cur?"on":"",textContent:S[k]})));
+const fld=(l,c)=>h("div",{className:"fld"},h("label",{textContent:l}),c);
+const val=v=>h("div",{className:"v",textContent:String(v)});
+
+// ---------- Vue Formulaire : création ----------
+function vNew(){
+  const key=crypto.randomUUID(); // conservée tant que le formulaire est ouvert : pas de doublon si double clic / retry
+  const npi=h("input",{value:isAgent()?F.npi:A.npi,readOnly:!isAgent(),maxLength:10,inputMode:"numeric",required:true});
+  const type=h("select",{},Object.entries(T).map(([k,v])=>h("option",{value:k,textContent:v})));
+  const cop=h("select",{},[1,2,3,4,5].map(n=>h("option",{value:n,textContent:n})));
+  const err=h("div",{className:"alert",role:"alert",hidden:true});
+  const save=h("button",{className:"btn p",textContent:"Enregistrer",type:"submit"});
+  const form=h("form",{onsubmit:async ev=>{
+    ev.preventDefault();err.hidden=true;save.disabled=true;
+    try{const d=await api("/api/demandes/",{method:"POST",headers:{"Idempotency-Key":key},
+        body:JSON.stringify({npi:npi.value.trim(),type_acte:type.value,nombre_copies:+cop.value})});
+      toast("Demande enregistrée");go("#/d/"+d.id)}
+    catch(e){err.textContent=e.message;err.hidden=false;save.disabled=false}}},
+    err,h("h1",{},h("small",{textContent:"Demande"}),"Nouvelle demande"),
+    h("div",{className:"grid"},h("div",{},fld("NPI",npi),fld("Type d'acte",type),fld("Copies (1 à 5)",cop)),h("div",{},fld("Statut",val("Déposée (à l'enregistrement)")))));
+  V.replaceChildren(
+    cp([["Demandes","#/"],["Nouvelle demande"]],h("div",{className:"row"},
+      h("button",{className:"btn p",textContent:"Enregistrer",onclick:()=>form.requestSubmit()}),h("button",{className:"btn",textContent:"Annuler",onclick:()=>go("#/")})),sbar("DEPOSEE")),
+    h("div",{className:"sheet"},form));
+  npi.focus();
+}
+
+// ---------- Vue Formulaire : fiche ----------
+async function vForm(id){
+  let d;try{d=await api("/api/demandes/"+id+"/")}catch(e){toast(e.message);return go("#/")}
+  const ag=isAgent(),btns=[];
+  const act=a=>api("/api/demandes/"+id+"/"+a+"/",{method:"POST",body:"{}"}).then(()=>{toast("Statut mis à jour");vForm(id)}).catch(e=>toast(e.message));
+  if(ag&&d.statut==="DEPOSEE")btns.push(h("button",{className:"btn p",textContent:"Prendre en charge",onclick:()=>act("prendre-en-charge")}));
+  if(ag&&d.statut==="EN_COURS")btns.push(h("button",{className:"btn p",textContent:"Valider",onclick:()=>act("valider")}),
+    h("button",{className:"btn",textContent:"Rejeter",onclick:()=>{$("#motif").value="";$("#rerr").hidden=true;$("#rok").onclick=()=>rejeter(id);$("#dRej").showModal();$("#motif").focus()}}));
+  const ref=d.id.slice(0,8);
+  const hist=[...d.historique].reverse().map(x=>h("div",{className:"msg"},h("div",{className:"mut",textContent:fmt(x.created_at)}),
+    h("div",{textContent:(x.ancien_statut?S[x.ancien_statut]+" → ":"Création : ")+S[x.nouveau_statut]+(x.motif?" — "+x.motif:"")+" · acteur #"+x.acteur_id})));
+  V.replaceChildren(
+    cp([["Demandes","#/"],[ref]],h("div",{className:"row"},btns),sbar(d.statut)),
+    h("div",{className:"sheet"},h("h1",{},h("small",{textContent:"Demande"}),ref),
+      h("div",{className:"grid"},
+        h("div",{},fld("NPI",val(d.npi)),fld("Type d'acte",val(T[d.type_acte])),fld("Copies",val(d.nombre_copies))),
+        h("div",{},fld("Créée le",val(fmt(d.created_at))),fld("Mise à jour",val(fmt(d.updated_at))),d.motif_rejet?fld("Motif du rejet",val(d.motif_rejet)):null))),
+    h("div",{className:"chat"},h("h2",{textContent:"Historique"}),hist));
+}
+async function rejeter(id){
+  const m=$("#motif").value.trim();
+  if(!m){$("#rerr").textContent="Le motif du rejet est obligatoire.";$("#rerr").hidden=false;return}
+  try{await api("/api/demandes/"+id+"/rejeter/",{method:"POST",body:JSON.stringify({motif:m})});$("#dRej").close();toast("Demande rejetée");vForm(id)}
+  catch(e){$("#rerr").textContent=e.message;$("#rerr").hidden=false}
+}
+
+// ---------- Routage par adresse (#/ liste · #/new création · #/d/<id> fiche) ----------
+function route(){
+  $("#login").hidden=!!A.access;
+  if(!A.access)return V.replaceChildren();
+  const m=location.hash;
+  if(m==="#/new")vNew();
+  else if(/^#\/d\/[0-9a-fA-F-]{36}$/.test(m))vForm(m.slice(4));
+  else vList();
+}
+addEventListener("hashchange",route);
+$("#help").onclick=()=>$("#dHelp").showModal();
+document.addEventListener("click",e=>{if(e.target.matches("[data-close]"))e.target.closest("dialog").close()});
+document.addEventListener("keydown",e=>{
+  if(!A.access)return;
+  if(e.altKey&&e.key.toLowerCase()==="n"){e.preventDefault();go("#/new")}
+  else if(e.key==="Escape"&&!document.querySelector("dialog[open]")&&location.hash.startsWith("#/")&&location.hash!=="#/")go("#/");
+  else if(e.key==="?"&&!e.target.matches("input,textarea,select"))$("#dHelp").showModal();
+});
+route();
+</script>
+</body>
+</html>
