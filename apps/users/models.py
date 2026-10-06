@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Length
 
+# Autorise Q(champ__length=10) dans les contraintes CHECK.
 models.CharField.register_lookup(Length)
 
 

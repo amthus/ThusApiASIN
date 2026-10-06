@@ -10,6 +10,7 @@ from .validators import mask_npi
 
 logger = logging.getLogger(__name__)
 
+# Cycle de vie : déposée -> en cours -> (validée | rejetée). VALIDEE et REJETEE sont finales.
 TRANSITIONS = {
     Statut.DEPOSEE: {Statut.EN_COURS},
     Statut.EN_COURS: {Statut.VALIDEE, Statut.REJETEE},
@@ -44,6 +45,7 @@ def creer_demande(*, acteur, npi, type_acte, nombre_copies, idempotency_key=None
             )
             HistoriqueStatut.objects.create(demande=demande, nouveau_statut=Statut.DEPOSEE, acteur=acteur)
     except IntegrityError:
+        # Course : une requête concurrente avec la même clé a gagné ; la contrainte UNIQUE nous l'indique.
         existing = _find_by_key(acteur, idempotency_key) if idempotency_key else None
         if existing is None:
             raise
