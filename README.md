@@ -8,8 +8,7 @@ Stack : Python 3.12, Django 5.2, Django REST Framework, JWT (simplejwt), Postgre
 ```bash
 python -m venv .venv && source .venv/bin/activate      # Windows : .venv\Scripts\activate
 pip install -r requirements-dev.txt
-export DJANGO_DEBUG=1  
-python manage.py makemigrations # PowerShell : $env:DJANGO_DEBUG="1"
+export DJANGO_DEBUG=1                                   # PowerShell : $env:DJANGO_DEBUG="1"
 python manage.py migrate
 python manage.py seed_demo --password 'Demo-Pass-2026!'  # crée agent1 (agent) et 0123456789 (usager)
 python manage.py runserver
@@ -44,18 +43,14 @@ B=http://127.0.0.1:8000
 # Connexion (usager = son NPI, agent = agent1)
 U=$(curl -s -X POST $B/api/auth/token/ -H 'Content-Type: application/json' \
      -d '{"username":"0123456789","password":"Demo-Pass-2026!"}' | python -c "import sys,json;print(json.load(sys.stdin)['access'])")
-     
 A=$(curl -s -X POST $B/api/auth/token/ -H 'Content-Type: application/json' \
      -d '{"username":"agent1","password":"Demo-Pass-2026!"}' | python -c "import sys,json;print(json.load(sys.stdin)['access'])")
-     
 # Déposer une demande (statut DEPOSEE)
 curl -X POST $B/api/demandes/ -H "Authorization: Bearer $U" -H 'Content-Type: application/json' \
      -d '{"npi":"0123456789","type_acte":"ACTE_NAISSANCE","nombre_copies":2}'
-     
 # Consulter (plus récentes d'abord, filtre facultatif)
 curl "$B/api/demandes/?statut=DEPOSEE" -H "Authorization: Bearer $U"
-
-# Faire avancer (agent) : prendre-en-charge -> valider | rejeter
+# 4. Faire avancer (agent) : prendre-en-charge -> valider | rejeter
 curl -X POST $B/api/demandes/<id>/prendre-en-charge/ -H "Authorization: Bearer $A"
 curl -X POST $B/api/demandes/<id>/rejeter/ -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"motif":"Pièce illisible"}'
 ```
@@ -103,4 +98,4 @@ Limites connues : (1) l'inscription par NPI + mot de passe ne **prouve pas** l'i
 d'identité national) ; (2) le rate limiting utilise le cache local, donc par processus (en production : Redis) ; (3) les agents sont
 créés en base (`seed_demo` / shell), pas via l'API ; (4) pas de CORS : l'écran est servi par la même origine.
 
-Choix de conception détaillés : `docs/ARCHITECTURE.md`.
+Choix de conception : `docs/ARCHITECTURE.md` · Où faire quoi (écran et API) : `docs/GUIDE_ACTIONS.md`.
